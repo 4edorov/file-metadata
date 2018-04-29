@@ -8,23 +8,46 @@
   <body>
     <h3>File metadata microservice</h3>
     <hr>
-    <form id='file' method='post' enctype='multipart/form-data' action='/get-file-size'>
+    <h4>Vue form upload data</h4>
+    <div id='file'>
+      <form id='file' enctype='multipart/from-data'>
+        <div>
+          <label for='file-input'>{{label}}</label>
+          <input type='file' id='file-input' @change='processFile($event)'>
+        </div>
+      </form>
       <div>
-        <!-- <label for='file'>Choose file to upload</label> -->
-        <label for='file'>{{label}}</label>
-        <input type='file' name='file'>
+        <button @click='postData'>Upload with Vue!!!</button>
       </div>
-      <div>
-        <button>Upload</button>
-      </div>
-    </form>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
     <script>
       const app = new Vue({
         el: '#file',
         data: {
-          label: 'Choose file to upload'
+          label: 'Choose file to upload',
+          url: '/get-file-size',
+          file: null
+        },
+        methods: {
+          processFile(event) {
+            this.file = event.target.files[0]
+          },
+          postData() {
+            if (!this.file) {
+              return
+            }
+            const formData = new FormData()
+            formData.append('file', this.file)
+            return fetch(this.url, {
+              body: formData,
+              method: 'POST'
+            })
+            .then(response => response.json())
+            .catch(error => console.error('Error: ', error))
+            .then(response => alert(JSON.stringify(response)))
+          }
         }
       })
     </script>
