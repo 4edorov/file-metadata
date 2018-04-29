@@ -46,7 +46,13 @@
             })
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
-            .then(response => alert(JSON.stringify(response)))
+            .then(response => {
+              const string = JSON.stringify(response)
+              document.body.innerHTML = string
+              setTimeout(() => {
+                alert(string)
+              }, 0)
+            })
           }
         }
       })
